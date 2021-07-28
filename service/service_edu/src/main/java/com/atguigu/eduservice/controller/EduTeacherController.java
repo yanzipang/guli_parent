@@ -125,7 +125,7 @@ public class EduTeacherController {
             @ApiParam(name = "id", value = "讲师ID", required = true)
             @PathVariable String id){
         EduTeacher teacher = eduTeacherService.getById(id);
-        return R.ok().data("item", teacher);
+        return R.ok().data("teacher", teacher);
     }
 
     // 根据ID修改讲师
