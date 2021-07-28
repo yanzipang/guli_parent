@@ -1,5 +1,6 @@
-package com.atguigu.commonutils;
+package com.atguigu.commonutils.response;
 
+import com.atguigu.commonutils.enums.ResultCodeEnum;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
@@ -29,8 +30,8 @@ public class R {
     public static R ok(){
         R r = new R();
         r.setSuccess(true);
-        r.setCode(ResultCode.SUCCESS);
-        r.setMessage("成功");
+        r.setCode(ResultCodeEnum.SUCCESS.getResultCode());
+        r.setMessage(ResultCodeEnum.SUCCESS.getResultMessage());
         return r;
     }
 
@@ -38,8 +39,8 @@ public class R {
     public static R error(){
         R r = new R();
         r.setSuccess(false);
-        r.setCode(ResultCode.ERROR);
-        r.setMessage("失败");
+        r.setCode(ResultCodeEnum.ERROR.getResultCode());
+        r.setMessage(ResultCodeEnum.ERROR.getResultMessage());
         return r;
     }
 
