@@ -1,17 +1,26 @@
 package com.atguigu.eduservice.controller;
 
 
+import cn.hutool.core.util.NumberUtil;
+import cn.hutool.core.util.ObjectUtil;
+import cn.hutool.core.util.StrUtil;
+import com.atguigu.eduservice.constant.MessageConstant;
+import com.atguigu.eduservice.convert.EduTeacherConvert;
 import com.atguigu.eduservice.entity.EduTeacher;
+import com.atguigu.eduservice.entity.vo.TeacherAdd;
 import com.atguigu.eduservice.entity.vo.TeacherQuery;
 import com.atguigu.eduservice.service.EduTeacherService;
 import com.atguigu.commonutils.response.R;
+import com.baomidou.mybatisplus.core.conditions.Wrapper;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.Resource;
 import java.util.List;
 
 /**
@@ -22,19 +31,33 @@ import java.util.List;
  * @author hgk
  * @since 2021-06-26
  */
-@Api(value = "讲师管理")
+@Api(
+        value = "EduTeacher-description",
+        tags = {"讲师管理"}
+)
 @RestController
 @RequestMapping("/eduservice/teacher")
 @CrossOrigin
 public class EduTeacherController {
-    // TODO 细化业务逻辑
 
     // 注入service
     @Autowired
     private EduTeacherService eduTeacherService;
 
+    @Resource
+    private EduTeacherConvert eduTeacherConvert;
+
     // 查询讲师列表所有数据
-    @ApiOperation(value = "查询所有讲师列表")
+    // @ApiOperation(value = "查询所有讲师列表")
+    @ApiOperation(
+            value = "查询讲师列表所有数据",
+            notes = "查询讲师列表所有数据",
+            nickname = "findAllTeacher"
+    )
+    @ApiResponses(value = {
+            @ApiResponse(code = 20000, message = "成功", response = R.class),
+            @ApiResponse(code = 20001, message = "失败", response = R.class),
+    })
     @GetMapping("findAll")
     public R findAllTeacher(){
             List<EduTeacher> teacherList = eduTeacherService.list(null);
@@ -48,6 +71,16 @@ public class EduTeacherController {
             @ApiParam(name = "id", value = "讲师ID", required = true)
             @PathVariable String id
     ){
+
+        if (StringUtils.isEmpty(id)) {
+            return R.error().message(MessageConstant.ID_NOT_EMPUT);
+        }
+
+        EduTeacher eduTeacher = eduTeacherService.getById(id);
+
+        if (ObjectUtil.isEmpty(eduTeacher)) {
+            return R.error().message(MessageConstant.DELETE_OBJ_NOT_HAS);
+        }
 
         boolean flag = eduTeacherService.removeById(id);
 
@@ -108,9 +141,27 @@ public class EduTeacherController {
     @PostMapping("addTeacher")
     public R addTeacher(
             @ApiParam(name = "teacher", value = "讲师对象", required = true)
-            @RequestBody EduTeacher eduTeacher){
+            @RequestBody TeacherAdd eduTeacher){
 
-        boolean flag = eduTeacherService.save(eduTeacher);
+        // TODO 有没有简单的查询方法
+        QueryWrapper<EduTeacher> queryWrapper = new QueryWrapper<>();
+        queryWrapper.lambda()
+                .eq(EduTeacher::getName,eduTeacher.getName())
+                .eq(EduTeacher::getIntro,eduTeacher.getIntro())
+                .eq(EduTeacher::getCareer,eduTeacher.getCareer())
+                .eq(EduTeacher::getLevel,eduTeacher.getLevel())
+                .eq(EduTeacher::getAvatar,eduTeacher.getAvatar())
+                .eq(EduTeacher::getSort,eduTeacher.getSort());
+
+        EduTeacher teacher1 = eduTeacherService.getOne(queryWrapper);
+
+        if (ObjectUtil.isNotEmpty(teacher1)) {
+            return R.error().message(MessageConstant.USER_HAVE);
+        }
+
+        EduTeacher teacher = eduTeacherConvert.toEduTeacher(eduTeacher);
+
+        boolean flag = eduTeacherService.save(teacher);
 
         if (flag) {
             return R.ok();
@@ -125,6 +176,9 @@ public class EduTeacherController {
     public R getById(
             @ApiParam(name = "id", value = "讲师ID", required = true)
             @PathVariable String id){
+        if (StrUtil.isBlank(id)) {
+            return R.error().message(MessageConstant.ID_NOT_EMPUT);
+        }
         EduTeacher teacher = eduTeacherService.getById(id);
         return R.ok().data("teacher", teacher);
     }
