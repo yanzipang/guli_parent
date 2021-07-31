@@ -8,7 +8,7 @@ package com.atguigu.commonutils.enums;
 public enum ResultCodeEnum {
     SUCCESS("成功",20000),
     ERROR("失败",20001),
-    NO_DATA("无数据",40000);
+    NO_DATA("无数据",20001);
 
     private final String resultMessage;
     private final Integer resultCode;

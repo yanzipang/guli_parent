@@ -1,6 +1,6 @@
 package com.atguigu.eduservice.mapper;
 
-import com.atguigu.eduservice.entity.EduTeacher;
+import com.atguigu.eduservice.entity.po.EduTeacherPO;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
 /**
@@ -11,6 +11,6 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
  * @author hgk
  * @since 2021-06-26
  */
-public interface EduTeacherMapper extends BaseMapper<EduTeacher> {
+public interface EduTeacherMapper extends BaseMapper<EduTeacherPO> {
 
 }

@@ -1,26 +1,23 @@
 package com.atguigu.eduservice.controller;
 
 
-import cn.hutool.core.util.NumberUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 import com.atguigu.eduservice.constant.MessageConstant;
 import com.atguigu.eduservice.convert.EduTeacherConvert;
-import com.atguigu.eduservice.entity.EduTeacher;
+import com.atguigu.eduservice.entity.po.EduTeacherPO;
 import com.atguigu.eduservice.entity.vo.TeacherAdd;
 import com.atguigu.eduservice.entity.vo.TeacherQuery;
 import com.atguigu.eduservice.service.EduTeacherService;
 import com.atguigu.commonutils.response.R;
-import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
-import javax.annotation.Resource;
+import javax.validation.Valid;
 import java.util.List;
 
 /**
@@ -32,7 +29,7 @@ import java.util.List;
  * @since 2021-06-26
  */
 @Api(
-        value = "EduTeacher-description",
+        value = "EduTeacherPO-description",
         tags = {"讲师管理"}
 )
 @RestController
@@ -44,11 +41,8 @@ public class EduTeacherController {
     @Autowired
     private EduTeacherService eduTeacherService;
 
-    @Resource
-    private EduTeacherConvert eduTeacherConvert;
 
     // 查询讲师列表所有数据
-    // @ApiOperation(value = "查询所有讲师列表")
     @ApiOperation(
             value = "查询讲师列表所有数据",
             notes = "查询讲师列表所有数据",
@@ -60,10 +54,13 @@ public class EduTeacherController {
     })
     @GetMapping("findAll")
     public R findAllTeacher(){
-            List<EduTeacher> teacherList = eduTeacherService.list(null);
+            LambdaQueryWrapper<EduTeacherPO> queryWrapper = new LambdaQueryWrapper<>();
+            queryWrapper.orderByDesc(EduTeacherPO::getGmtCreate, EduTeacherPO::getGmtModified);
+            List<EduTeacherPO> teacherList = eduTeacherService.list(queryWrapper);
             return R.ok().data("items",teacherList);
     }
 
+    // TODO 如果先查询 后删除，删除后要保持查询条件;新增加的在第一行；在第二页修改 一条记录，修改完后依旧跳到第二页
     // 逻辑删除
     @ApiOperation(value = "根据ID删除讲师")
     @DeleteMapping("{id}")
@@ -72,13 +69,13 @@ public class EduTeacherController {
             @PathVariable String id
     ){
 
-        if (StringUtils.isEmpty(id)) {
+        if (StrUtil.isEmpty(id)) {
             return R.error().message(MessageConstant.ID_NOT_EMPUT);
         }
 
-        EduTeacher eduTeacher = eduTeacherService.getById(id);
+        EduTeacherPO eduTeacherPO = eduTeacherService.getById(id);
 
-        if (ObjectUtil.isEmpty(eduTeacher)) {
+        if (ObjectUtil.isEmpty(eduTeacherPO)) {
             return R.error().message(MessageConstant.DELETE_OBJ_NOT_HAS);
         }
 
@@ -99,9 +96,9 @@ public class EduTeacherController {
             @PathVariable Long page,
             @ApiParam(name = "limit", value = "每页记录数", required = true)
             @PathVariable Long limit){
-        Page<EduTeacher> pageParam = new Page<>(page, limit);
+        Page<EduTeacherPO> pageParam = new Page<>(page, limit);
         eduTeacherService.page(pageParam, null);
-        List<EduTeacher> records = pageParam.getRecords();  // list集合
+        List<EduTeacherPO> records = pageParam.getRecords();  // list集合
         long total = pageParam.getTotal();  //  总记录数
         return R.ok().data("total", total).data("rows", records);   //
     }
@@ -126,11 +123,11 @@ public class EduTeacherController {
             @RequestBody(required = false) TeacherQuery teacherQuery  // @RequestBody取不到get请求方式提交的数据
     ){
 
-        Page<EduTeacher> pageParam = new Page<>(page, limit);
+        Page<EduTeacherPO> pageParam = new Page<>(page, limit);
 
         eduTeacherService.pageQuery(pageParam, teacherQuery);
 
-        List<EduTeacher> records = pageParam.getRecords(); // list集合
+        List<EduTeacherPO> records = pageParam.getRecords(); // list集合
 
         long total = pageParam.getTotal();
         return R.ok().data("total", total).data("rows", records);
@@ -141,25 +138,25 @@ public class EduTeacherController {
     @PostMapping("addTeacher")
     public R addTeacher(
             @ApiParam(name = "teacher", value = "讲师对象", required = true)
-            @RequestBody TeacherAdd eduTeacher){
+            @RequestBody @Valid TeacherAdd eduTeacher){
 
         // TODO 有没有简单的查询方法
-        QueryWrapper<EduTeacher> queryWrapper = new QueryWrapper<>();
+        QueryWrapper<EduTeacherPO> queryWrapper = new QueryWrapper<>();
         queryWrapper.lambda()
-                .eq(EduTeacher::getName,eduTeacher.getName())
-                .eq(EduTeacher::getIntro,eduTeacher.getIntro())
-                .eq(EduTeacher::getCareer,eduTeacher.getCareer())
-                .eq(EduTeacher::getLevel,eduTeacher.getLevel())
-                .eq(EduTeacher::getAvatar,eduTeacher.getAvatar())
-                .eq(EduTeacher::getSort,eduTeacher.getSort());
+                .eq(EduTeacherPO::getName,eduTeacher.getName())
+                .eq(EduTeacherPO::getIntro,eduTeacher.getIntro())
+                .eq(EduTeacherPO::getCareer,eduTeacher.getCareer())
+                .eq(EduTeacherPO::getLevel,eduTeacher.getLevel())
+                .eq(EduTeacherPO::getAvatar,eduTeacher.getAvatar())
+                .eq(EduTeacherPO::getSort,eduTeacher.getSort());
 
-        EduTeacher teacher1 = eduTeacherService.getOne(queryWrapper);
+        EduTeacherPO teacher1 = eduTeacherService.getOne(queryWrapper);
 
         if (ObjectUtil.isNotEmpty(teacher1)) {
             return R.error().message(MessageConstant.USER_HAVE);
         }
 
-        EduTeacher teacher = eduTeacherConvert.toEduTeacher(eduTeacher);
+        EduTeacherPO teacher = EduTeacherConvert.INSTANCE.toEduTeacher(eduTeacher);
 
         boolean flag = eduTeacherService.save(teacher);
 
@@ -179,7 +176,7 @@ public class EduTeacherController {
         if (StrUtil.isBlank(id)) {
             return R.error().message(MessageConstant.ID_NOT_EMPUT);
         }
-        EduTeacher teacher = eduTeacherService.getById(id);
+        EduTeacherPO teacher = eduTeacherService.getById(id);
         return R.ok().data("teacher", teacher);
     }
 
@@ -188,9 +185,9 @@ public class EduTeacherController {
     @PostMapping("updateTeacher")
     public R updateById(
             @ApiParam(name = "teacher", value = "讲师对象", required = true)
-            @RequestBody EduTeacher eduTeacher){
+            @RequestBody EduTeacherPO eduTeacherPO){
 
-        boolean flag = eduTeacherService.updateById(eduTeacher);
+        boolean flag = eduTeacherService.updateById(eduTeacherPO);
         if (flag) {
             return R.ok();
         } else {

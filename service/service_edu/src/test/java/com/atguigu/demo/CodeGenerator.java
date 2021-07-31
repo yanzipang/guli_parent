@@ -29,7 +29,7 @@ public class CodeGenerator {
         /**
          * 此处有时需要修改
          */
-        gc.setOutputDir("D:\\Idea\\guli_parent\\service\\service_edu" + "/src/main/java"); // 输出路径
+        gc.setOutputDir("G:\\officialIdeaWork\\guli_app\\guli_parent\\service\\service_edu" + "/src/main/java"); // 输出路径
         gc.setAuthor("hgk");
         gc.setOpen(false); //生成后是否打开资源管理器
         gc.setFileOverride(false); //重新生成时文件是否覆盖
@@ -72,7 +72,7 @@ public class CodeGenerator {
         /**
          * 根据表名生成代码
          */
-        strategy.setInclude("edu_teacher");
+        strategy.setInclude("edu_subject");
         strategy.setNaming(NamingStrategy.underline_to_camel);//数据库表映射到实体的命名策略
         strategy.setTablePrefix(pc.getModuleName() + "_"); //生成实体时去掉表前缀
 

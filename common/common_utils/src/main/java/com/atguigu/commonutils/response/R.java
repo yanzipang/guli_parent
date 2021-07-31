@@ -26,6 +26,14 @@ public class R {
     // 构造方法私有，让别人不用new这个对象，而只能使用此类中的方法
     private R(){}
 
+    public boolean isSuccess() {
+        return ResultCodeEnum.SUCCESS.getResultCode().equals(this.code);
+    }
+
+    public boolean isNotSuccess() {
+        return !isSuccess();
+    }
+
     // 成功静态方法
     public static R ok(){
         R r = new R();

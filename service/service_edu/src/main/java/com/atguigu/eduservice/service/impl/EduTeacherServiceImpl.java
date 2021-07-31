@@ -1,6 +1,6 @@
 package com.atguigu.eduservice.service.impl;
 
-import com.atguigu.eduservice.entity.EduTeacher;
+import com.atguigu.eduservice.entity.po.EduTeacherPO;
 import com.atguigu.eduservice.entity.vo.TeacherQuery;
 import com.atguigu.eduservice.mapper.EduTeacherMapper;
 import com.atguigu.eduservice.service.EduTeacherService;
@@ -19,13 +19,13 @@ import org.springframework.util.StringUtils;
  * @since 2021-06-26
  */
 @Service
-public class EduTeacherServiceImpl extends ServiceImpl<EduTeacherMapper, EduTeacher> implements EduTeacherService {
+public class EduTeacherServiceImpl extends ServiceImpl<EduTeacherMapper, EduTeacherPO> implements EduTeacherService {
 
     @Override
-    public void pageQuery(Page<EduTeacher> pageParam, TeacherQuery teacherQuery) {
+    public void pageQuery(Page<EduTeacherPO> pageParam, TeacherQuery teacherQuery) {
 
         // 构建条件
-        QueryWrapper<EduTeacher> queryWrapper = new QueryWrapper<>();
+        QueryWrapper<EduTeacherPO> queryWrapper = new QueryWrapper<>();
 
         queryWrapper.orderByAsc("sort");
         if (teacherQuery == null){

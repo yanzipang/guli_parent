@@ -1,4 +1,4 @@
-package com.atguigu.eduservice.entity;
+package com.atguigu.eduservice.entity.po;
 
 import com.baomidou.mybatisplus.annotation.*;
 
@@ -24,7 +24,8 @@ import lombok.experimental.Accessors;
 @EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)
 @ApiModel(value="EduTeacher对象", description="讲师")
-public class EduTeacher implements Serializable {
+@TableName("edu_teacher")
+public class EduTeacherPO implements Serializable {
 
     private static final long serialVersionUID = 1L;
 

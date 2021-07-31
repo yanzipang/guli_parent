@@ -1,9 +1,8 @@
 package com.atguigu.eduservice.convert;
 
-import com.atguigu.eduservice.entity.EduTeacher;
+import com.atguigu.eduservice.entity.po.EduTeacherPO;
 import com.atguigu.eduservice.entity.vo.TeacherAdd;
 import org.mapstruct.Mapper;
-import org.mapstruct.ReportingPolicy;
 import org.mapstruct.factory.Mappers;
 
 /**
@@ -13,6 +12,8 @@ import org.mapstruct.factory.Mappers;
  */
 @Mapper(componentModel = "spring")
 public interface EduTeacherConvert {
+    EduTeacherConvert INSTANCE = Mappers.getMapper(EduTeacherConvert.class);
 
-    EduTeacher toEduTeacher(TeacherAdd teacherAdd);
+    EduTeacherPO toEduTeacher(TeacherAdd teacherAdd);
+
 }
