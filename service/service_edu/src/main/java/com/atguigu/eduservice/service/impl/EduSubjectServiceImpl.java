@@ -1,20 +1,27 @@
 package com.atguigu.eduservice.service.impl;
 
+import cn.hutool.core.util.ObjectUtil;
 import com.alibaba.excel.EasyExcel;
 import com.atguigu.commonutils.response.R;
 import com.atguigu.eduservice.Listener.SubjectListener;
 import com.atguigu.eduservice.entity.excel.SubjectExcelData;
 import com.atguigu.eduservice.entity.po.EduSubjectPO;
+import com.atguigu.eduservice.entity.vo.OneSubjectVO;
+import com.atguigu.eduservice.entity.vo.TwoSubjectVO;
 import com.atguigu.eduservice.mapper.EduSubjectMapper;
 import com.atguigu.eduservice.service.EduSubjectService;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import io.swagger.annotations.Scope;
-import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.annotation.Resource;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -27,9 +34,12 @@ import java.io.InputStream;
 @Service
 public class EduSubjectServiceImpl extends ServiceImpl<EduSubjectMapper, EduSubjectPO> implements EduSubjectService {
 
+    @Resource
+    private EduSubjectMapper eduSubjectMapper;
+
     @Override
     public R saveSubject(MultipartFile file,EduSubjectService eduSubjectService) {
-
+        // TODO 判断上传的Excel是否符合模板标准
         try {
             // 获取文件输入流
             InputStream in = file.getInputStream();
@@ -38,5 +48,46 @@ public class EduSubjectServiceImpl extends ServiceImpl<EduSubjectMapper, EduSubj
             e.printStackTrace();
         }
         return R.ok().message("添加成功");
+    }
+
+    @Override
+    public R getAllSubject() {
+        // 查询所有一级分类
+        LambdaQueryWrapper<EduSubjectPO> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(EduSubjectPO::getParentId,0);
+        List<EduSubjectPO> oneEduSubjectPOS = eduSubjectMapper.selectList(queryWrapper);
+        if (ObjectUtil.isEmpty(oneEduSubjectPOS)) {
+            return R.error().message("无数据");
+        }
+
+        // 查询所有二级分类
+        LambdaQueryWrapper<EduSubjectPO> queryWrapper1 = new LambdaQueryWrapper<>();
+        queryWrapper1.ne(EduSubjectPO::getParentId,0);
+        List<EduSubjectPO> twoEduSubjectPOS = eduSubjectMapper.selectList(queryWrapper1);
+
+        // 组装数据
+        // 按照parentId分组
+        Map<String, List<EduSubjectPO>> collect = twoEduSubjectPOS.stream().collect(Collectors.groupingBy(EduSubjectPO::getParentId));
+        List<OneSubjectVO> oneSubjectVOList = new ArrayList<>();
+        oneEduSubjectPOS.forEach(k -> {
+            OneSubjectVO oneSubjectVO = new OneSubjectVO();
+            oneSubjectVO.setId(k.getId());
+            oneSubjectVO.setTitle(k.getTitle());
+            //oneSubjectVO = EduSubjectCovert.INSTANCE.toOneSubjectVO(k);
+            List<EduSubjectPO> eduSubjectPOS = collect.get(k.getId());
+            List<TwoSubjectVO> twoSubjectVOList = new ArrayList<>();
+            //List<TwoSubjectVO> twoSubjectVOList1 = EduSubjectCovert.INSTANCE.toTwoSubjectVO(eduSubjectPOS);
+            eduSubjectPOS.forEach(k1 -> {
+                TwoSubjectVO twoSubjectVO = new TwoSubjectVO();
+                twoSubjectVO.setId(k1.getId());
+                twoSubjectVO.setTitle(k1.getTitle());
+                twoSubjectVOList.add(twoSubjectVO);
+            });
+            // TODO 如果报错，可能是List<TwoSubjectVO> 的空指针异常
+            oneSubjectVO.setTwoSubjectVOList(twoSubjectVOList);
+            oneSubjectVOList.add(oneSubjectVO);
+        });
+
+        return R.ok().data("data",oneSubjectVOList);
     }
 }

@@ -21,7 +21,7 @@ public class EduLoginController {
 
     @GetMapping("/info")
     public R info() {
-        return R.ok().data("roles","[admin]").data("name","admin").data("avatar","https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fimg.16pic.com%2F00%2F88%2F44%2F16pic_8844212_s.jpg&refer=http%3A%2F%2Fimg.16pic.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=jpeg?sec=1627890364&t=cde9c16874f8b42d36374e8b0d86d926");
+        return R.ok().data("roles","[admin]").data("name","admin").data("avatar","https://hgk-guli.oss-cn-qingdao.aliyuncs.com/2021/07/29/ima3.jpg4fbf24e6a205478e9af9f3b8cd954985");
     }
 
 }

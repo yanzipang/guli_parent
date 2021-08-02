@@ -4,7 +4,6 @@ package com.atguigu.eduservice.controller;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 import com.atguigu.eduservice.constant.MessageConstant;
-import com.atguigu.eduservice.convert.EduTeacherConvert;
 import com.atguigu.eduservice.entity.po.EduTeacherPO;
 import com.atguigu.eduservice.entity.vo.TeacherAdd;
 import com.atguigu.eduservice.entity.vo.TeacherQuery;
@@ -14,6 +13,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import io.swagger.annotations.*;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -156,7 +156,8 @@ public class EduTeacherController {
             return R.error().message(MessageConstant.USER_HAVE);
         }
 
-        EduTeacherPO teacher = EduTeacherConvert.INSTANCE.toEduTeacher(eduTeacher);
+        EduTeacherPO teacher = new EduTeacherPO();
+        BeanUtils.copyProperties(eduTeacher,teacher);
 
         boolean flag = eduTeacherService.save(teacher);
 

@@ -2,8 +2,11 @@ package com.atguigu.eduservice.service;
 
 import com.atguigu.commonutils.response.R;
 import com.atguigu.eduservice.entity.po.EduSubjectPO;
+import com.atguigu.eduservice.entity.vo.OneSubjectVO;
 import com.baomidou.mybatisplus.extension.service.IService;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 /**
  * <p>
@@ -16,4 +19,6 @@ import org.springframework.web.multipart.MultipartFile;
 public interface EduSubjectService extends IService<EduSubjectPO> {
 
     R saveSubject(MultipartFile file,EduSubjectService eduSubjectService);
+
+    R getAllSubject();
 }
