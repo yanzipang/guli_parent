@@ -41,7 +41,10 @@ public class EduTeacherController {
     @Autowired
     private EduTeacherService eduTeacherService;
 
-
+    /**
+     * 一个新的更改
+     * @return
+     */
     // 查询讲师列表所有数据
     @ApiOperation(
             value = "查询讲师列表所有数据",
