@@ -73,21 +73,18 @@ public class EduSubjectServiceImpl extends ServiceImpl<EduSubjectMapper, EduSubj
             OneSubjectVO oneSubjectVO = new OneSubjectVO();
             oneSubjectVO.setId(k.getId());
             oneSubjectVO.setTitle(k.getTitle());
-            //oneSubjectVO = EduSubjectCovert.INSTANCE.toOneSubjectVO(k);
             List<EduSubjectPO> eduSubjectPOS = collect.get(k.getId());
             List<TwoSubjectVO> twoSubjectVOList = new ArrayList<>();
-            //List<TwoSubjectVO> twoSubjectVOList1 = EduSubjectCovert.INSTANCE.toTwoSubjectVO(eduSubjectPOS);
             eduSubjectPOS.forEach(k1 -> {
                 TwoSubjectVO twoSubjectVO = new TwoSubjectVO();
                 twoSubjectVO.setId(k1.getId());
                 twoSubjectVO.setTitle(k1.getTitle());
                 twoSubjectVOList.add(twoSubjectVO);
             });
-            // TODO 如果报错，可能是List<TwoSubjectVO> 的空指针异常
             oneSubjectVO.setTwoSubjectVOList(twoSubjectVOList);
             oneSubjectVOList.add(oneSubjectVO);
         });
 
-        return R.ok().data("data",oneSubjectVOList);
+        return R.ok().data("list",oneSubjectVOList);
     }
 }
