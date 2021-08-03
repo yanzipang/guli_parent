@@ -10,12 +10,17 @@ import org.springframework.transaction.support.TransactionTemplate;
  * @description
  */
 public class BaseManager {
+
     @Autowired
     private PlatformTransactionManager transactionManager;
 
     public BaseManager() {
     }
 
+    /**
+     * 获取到编程式事务管理模板
+     * @return TransactionTemplate：编程式事务管理模板
+     */
     public TransactionTemplate getDataSourceTransactionManager() {
         return new TransactionTemplate(this.transactionManager);
     }
