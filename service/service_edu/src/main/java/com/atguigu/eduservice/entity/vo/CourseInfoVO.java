@@ -3,6 +3,7 @@ package com.atguigu.eduservice.entity.vo;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import javax.validation.constraints.NotBlank;
 import java.math.BigDecimal;
 
 /**
@@ -14,6 +15,7 @@ import java.math.BigDecimal;
 public class CourseInfoVO {
 
     @ApiModelProperty(value = "课程讲师ID")
+    @NotBlank(message = "讲师不能为空")
     private String teacherId;
 
     @ApiModelProperty(value = "课程专业ID")

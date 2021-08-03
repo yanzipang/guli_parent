@@ -142,7 +142,7 @@ public class EduTeacherController {
         // TODO 有没有简单的查询方法
         QueryWrapper<EduTeacherPO> queryWrapper = new QueryWrapper<>();
         queryWrapper.lambda()
-                .eq(EduTeacherPO::getName,eduTeacher.getName())
+                //.eq(EduTeacherPO::getName,eduTeacher.getName())
                 .eq(EduTeacherPO::getIntro,eduTeacher.getIntro())
                 .eq(EduTeacherPO::getCareer,eduTeacher.getCareer())
                 .eq(EduTeacherPO::getLevel,eduTeacher.getLevel())
