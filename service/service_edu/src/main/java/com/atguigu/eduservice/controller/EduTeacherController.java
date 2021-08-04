@@ -59,7 +59,7 @@ public class EduTeacherController {
             return R.ok().data("items",teacherList);
     }
 
-    // TODO 如果先查询 后删除，删除后要保持查询条件;新增加的在第一行；在第二页修改 一条记录，修改完后依旧跳到第二页
+
     // 逻辑删除
     @ApiOperation(value = "根据ID删除讲师")
     @DeleteMapping("{id}")
@@ -139,7 +139,6 @@ public class EduTeacherController {
             @ApiParam(name = "teacher", value = "讲师对象", required = true)
             @RequestBody @Valid TeacherAdd eduTeacher){
 
-        // TODO 有没有简单的查询方法
         QueryWrapper<EduTeacherPO> queryWrapper = new QueryWrapper<>();
         queryWrapper.lambda()
                 //.eq(EduTeacherPO::getName,eduTeacher.getName())

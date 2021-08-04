@@ -10,6 +10,7 @@ import com.atguigu.eduservice.service.EduCourseService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
 /**
@@ -26,14 +27,21 @@ public class EduCourseServiceImpl extends ServiceImpl<EduCourseMapper, EduCourse
     @Autowired
     private EduCourseManager eduCourseManager;
 
+    @Autowired
+    private RedisTemplate redisTemplate;
+
+    private final String key = "course";
+
     @Override
     public R addCourseInfo(CourseInfoVO courseInfoVO) {
         if (ObjectUtil.isNull(courseInfoVO)) {
             return R.error().message("数据不能为空");
         }
 
-        R r = eduCourseManager.addCourseInfoAndEduCourseDescription(courseInfoVO);
+        //R r = eduCourseManager.addCourseInfoAndEduCourseDescription(courseInfoVO);
 
-        return r;
+        redisTemplate.opsForHash().put(key,"value",courseInfoVO.getPrice());
+
+        return R.ok();
     }
 }

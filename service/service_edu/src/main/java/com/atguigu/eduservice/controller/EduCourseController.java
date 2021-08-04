@@ -30,6 +30,7 @@ public class EduCourseController {
      * @param courseInfo
      * @return
      */
+    // TODO 这里有三步保存操作，现在是每一步都保存到数据后，后期优化成：每一步都先缓存到redis，最后在保存的时候统一保存到数据库中
     @PostMapping("addCourseInfo")
     public R addCourseInfo(@RequestBody @Valid CourseInfoVO courseInfo) {
         R r = eduCourseService.addCourseInfo(courseInfo);
