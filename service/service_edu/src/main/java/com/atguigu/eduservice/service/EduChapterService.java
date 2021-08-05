@@ -15,4 +15,6 @@ import com.baomidou.mybatisplus.extension.service.IService;
 public interface EduChapterService extends IService<EduChapterPO> {
 
     R getAllChapterVideo(String courseId);
+
+    R deleteChapterByChapterId(String chapterId);
 }

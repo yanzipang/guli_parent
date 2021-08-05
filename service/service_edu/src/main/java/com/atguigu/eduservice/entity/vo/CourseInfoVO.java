@@ -17,6 +17,12 @@ import java.math.BigDecimal;
 @Data
 public class CourseInfoVO {
 
+    /**
+     * 要根据此id进行修改
+     */
+    @ApiModelProperty(value = "课程ID")
+    private String id;
+
     @ApiModelProperty(value = "课程讲师ID")
     @NotBlank(message = "讲师不能为空")
     private String teacherId;

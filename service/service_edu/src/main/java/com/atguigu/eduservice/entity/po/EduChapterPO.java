@@ -49,5 +49,9 @@ public class EduChapterPO implements Serializable {
     @TableField(fill = FieldFill.INSERT_UPDATE)
     private Date gmtModified;
 
+    @ApiModelProperty(value = "逻辑删除")
+    @TableLogic // 逻辑删除的注解
+    private Integer delFlag;
+
 
 }

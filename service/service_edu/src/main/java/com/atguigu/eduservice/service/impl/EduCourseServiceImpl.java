@@ -51,6 +51,11 @@ public class EduCourseServiceImpl extends ServiceImpl<EduCourseMapper, EduCourse
         return r;
     }
 
+    /**
+     * 获取课程信息
+     * @param id
+     * @return
+     */
     @Override
     public R getCourseInfo(String id) {
         EduCoursePO eduCoursePO = eduCourseMapper.selectById(id);
@@ -71,6 +76,7 @@ public class EduCourseServiceImpl extends ServiceImpl<EduCourseMapper, EduCourse
         EduCourseDescriptionPO eduCourseDescriptionPO = new EduCourseDescriptionPO();
         BeanUtils.copyProperties(courseInfoVO,eduCourseDescriptionPO);
         int i1 = eduCourseDescriptionMapper.updateById(eduCourseDescriptionPO);
+        //R r = eduCourseManager.updateCourseInfo(eduCoursePO,eduCourseDescriptionPO,courseInfoVO.getId())
         return R.ok().message("修改成功");
     }
 }
