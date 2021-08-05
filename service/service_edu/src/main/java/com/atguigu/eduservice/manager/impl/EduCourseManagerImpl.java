@@ -58,6 +58,7 @@ public class EduCourseManagerImpl extends BaseManager implements EduCourseManage
                     transactionStatus.setRollbackOnly();
                     return R.error().message("添加失败");
                 }
+                System.out.println(R.ok().message("添加成功").data("courseId",eduCoursePO.getId()));
                 return R.ok().message("添加成功").data("courseId",eduCoursePO.getId());
             } catch (Exception e) {
                 transactionStatus.setRollbackOnly();

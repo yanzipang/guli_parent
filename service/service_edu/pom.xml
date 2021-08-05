@@ -13,12 +13,12 @@
 
     <dependencies>
         <!--rocketmq依赖-->
-        <dependency>
-            <!--需要与rocketmq版本号一致-->
-            <groupId>org.apache.rocketmq</groupId>
-            <artifactId>rocketmq-client</artifactId>
-            <version>4.2.0</version>
-        </dependency>
+<!--        <dependency>-->
+<!--            &lt;!&ndash;需要与rocketmq版本号一致&ndash;&gt;-->
+<!--            <groupId>org.apache.rocketmq</groupId>-->
+<!--            <artifactId>rocketmq-client</artifactId>-->
+<!--            <version>4.2.0</version>-->
+<!--        </dependency>-->
         <!--对象转换的依赖-->
         <!--mapStruct依赖-->
         <dependency>

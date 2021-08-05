@@ -13,9 +13,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class SubjectExcelData {
 
-    @ExcelProperty(index = 0)
+    @ExcelProperty(value = "一级课程名称",index = 0)
     private String oneSubjectName;
 
-    @ExcelProperty(index = 1)
+    @ExcelProperty(value = "二级课程名称",index = 1)
     private String twoSubjectName;
 }

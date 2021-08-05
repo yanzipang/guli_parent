@@ -19,6 +19,7 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * @Author hgk
@@ -62,8 +63,15 @@ public class SubjectListener extends AnalysisEventListener<SubjectExcelData> {
     }
 
     //读取excel表头信息
+    // 判断Excel文件是否符合格式
     @Override
     public void invokeHeadMap(Map<Integer, String> headMap, AnalysisContext context) {
+//        Set<Integer> keySet = headMap.keySet();
+//        if (ObjectUtil.isNotEmpty(headMap)) {
+//            if (!headMap.get(0).equals("一级课程名称")) {
+//
+//            }
+//        }
         System.out.println("表头信息："+headMap);
     }
 

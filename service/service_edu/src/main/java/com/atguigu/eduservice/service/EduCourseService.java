@@ -16,4 +16,8 @@ import com.baomidou.mybatisplus.extension.service.IService;
 public interface EduCourseService extends IService<EduCoursePO> {
 
     R addCourseInfo(CourseInfoVO courseInfoVO);
+
+    R getCourseInfo(String id);
+
+    R updateCourseInfo(CourseInfoVO courseInfoVO);
 }
