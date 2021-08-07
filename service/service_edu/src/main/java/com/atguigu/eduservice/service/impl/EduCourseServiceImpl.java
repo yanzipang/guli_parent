@@ -4,10 +4,16 @@ import cn.hutool.core.util.ObjectUtil;
 import com.atguigu.commonutils.response.R;
 import com.atguigu.eduservice.entity.po.EduCourseDescriptionPO;
 import com.atguigu.eduservice.entity.po.EduCoursePO;
+import com.atguigu.eduservice.entity.po.EduSubjectPO;
+import com.atguigu.eduservice.entity.po.EduTeacherPO;
 import com.atguigu.eduservice.entity.vo.CourseInfoVO;
+import com.atguigu.eduservice.entity.vo.CoursePublishVO;
+import com.atguigu.eduservice.enums.CourseStatusEnum;
 import com.atguigu.eduservice.manager.EduCourseManager;
 import com.atguigu.eduservice.mapper.EduCourseDescriptionMapper;
 import com.atguigu.eduservice.mapper.EduCourseMapper;
+import com.atguigu.eduservice.mapper.EduSubjectMapper;
+import com.atguigu.eduservice.mapper.EduTeacherMapper;
 import com.atguigu.eduservice.service.EduCourseService;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -18,6 +24,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import java.util.List;
 
 /**
  * <p>
@@ -38,6 +45,12 @@ public class EduCourseServiceImpl extends ServiceImpl<EduCourseMapper, EduCourse
 
     @Resource
     private EduCourseDescriptionMapper eduCourseDescriptionMapper;
+
+    @Resource
+    private EduTeacherMapper eduTeacherMapper;
+
+    @Resource
+    private EduSubjectMapper eduSubjectMapper;
 
 
     @Override
@@ -78,5 +91,52 @@ public class EduCourseServiceImpl extends ServiceImpl<EduCourseMapper, EduCourse
         int i1 = eduCourseDescriptionMapper.updateById(eduCourseDescriptionPO);
         //R r = eduCourseManager.updateCourseInfo(eduCoursePO,eduCourseDescriptionPO,courseInfoVO.getId())
         return R.ok().message("修改成功");
+    }
+
+    @Override
+    public R getPublishAllCourse(String courseId) {
+        CoursePublishVO coursePublishVO = new CoursePublishVO();
+        // 查询课程表记录
+        EduCoursePO eduCoursePO = eduCourseMapper.selectById(courseId);
+        if (ObjectUtil.isNull(eduCoursePO)) {
+            return R.error().message("课程不存在");
+        }
+        coursePublishVO.setId(eduCoursePO.getId());
+        coursePublishVO.setLessonNum(eduCoursePO.getLessonNum());
+        coursePublishVO.setPrice(eduCoursePO.getPrice());
+        coursePublishVO.setTitle(eduCoursePO.getTitle());
+        coursePublishVO.setCover(eduCoursePO.getCover());
+        // 查询课程描述表信息
+        EduCourseDescriptionPO eduCourseDescriptionPO = eduCourseDescriptionMapper.selectById(courseId);
+        if (ObjectUtil.isNotNull(eduCourseDescriptionPO)) {
+            coursePublishVO.setDescription(eduCourseDescriptionPO.getDescription());
+        }
+        // 查询讲师表信息
+        EduTeacherPO eduTeacherPO = eduTeacherMapper.selectById(eduCoursePO.getTeacherId());
+        if (ObjectUtil.isNotNull(eduTeacherPO)) {
+            coursePublishVO.setTeacherName(eduTeacherPO.getName());
+        }
+        // 查询课程父类分类表信息
+        EduSubjectPO eduSubjectPO = eduSubjectMapper.selectById(eduCoursePO.getSubjectParentId());
+        if (ObjectUtil.isNotNull(eduSubjectPO)) {
+            coursePublishVO.setSubjectLevelOne(eduSubjectPO.getTitle());
+        }
+        // 查询课程子类分类表信息
+        EduSubjectPO eduSubjectPO1 = eduSubjectMapper.selectById(eduCoursePO.getSubjectId());
+        if (ObjectUtil.isNotNull(eduSubjectPO1)) {
+            coursePublishVO.setSubjectLevelTwo(eduSubjectPO1.getTitle());
+        }
+        return R.ok().data("coursePublishVO",coursePublishVO);
+    }
+
+    @Override
+    public R publishCourseInfo(String id) {
+        EduCoursePO eduCoursePO = new EduCoursePO();
+        eduCoursePO.setId(id).setStatus(CourseStatusEnum.NORMAL.getStatus());
+        int i = eduCourseMapper.updateById(eduCoursePO);
+        if (i < 1) {
+            return R.error().message("发布失败");
+        }
+        return R.ok().message("发布成功");
     }
 }

@@ -58,5 +58,28 @@ public class EduCourseController {
         R r = eduCourseService.updateCourseInfo(courseInfoVO);
         return r;
     }
+
+    /**
+     * 根据课程id查询课程信息--用于课程最终发布
+     * @param courseId
+     * @return
+     */
+    @GetMapping("getPublishAllCourse/{id}")
+    public R getAllCourse(@PathVariable("id") String courseId) {
+        R r = eduCourseService.getPublishAllCourse(courseId);
+        System.out.println(r.getData());
+        return r;
+    }
+
+    /**
+     * 课程最终发布，修改发布状态
+     * @param id
+     * @return
+     */
+    @GetMapping("publishCourse/{id}")
+    public R publishCourse(@PathVariable("id") String id) {
+        R r = eduCourseService.publishCourseInfo(id);
+        return r;
+    }
 }
 

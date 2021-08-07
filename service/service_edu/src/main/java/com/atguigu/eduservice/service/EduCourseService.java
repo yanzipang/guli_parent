@@ -20,4 +20,8 @@ public interface EduCourseService extends IService<EduCoursePO> {
     R getCourseInfo(String id);
 
     R updateCourseInfo(CourseInfoVO courseInfoVO);
+
+    R getPublishAllCourse(String courseId);
+
+    R publishCourseInfo(String id);
 }

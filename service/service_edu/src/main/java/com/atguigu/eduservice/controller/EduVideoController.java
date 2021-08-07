@@ -32,9 +32,9 @@ public class EduVideoController {
      * @return
      */
     @PostMapping("addVideo")
-    public R addVideo(EduVideoPO eduVideoPO) {
+    public R addVideo(@RequestBody EduVideoPO eduVideoPO) {
         boolean flag = eduVideoService.save(eduVideoPO);
-        if (flag) {
+        if (!flag) {
             throw new GuliException(ResultCodeEnum.ERROR.getResultCode(), "添加小节失败");
         }
         return R.ok().message("添加小节成功");
@@ -49,7 +49,7 @@ public class EduVideoController {
     @DeleteMapping("deleteVideo/{id}")
     public R deleteVideo(@PathVariable("id") String id) {
         boolean flag = eduVideoService.removeById(id);
-        if (flag) {
+        if (!flag) {
             throw new GuliException(ResultCodeEnum.ERROR.getResultCode(), "删除小节失败");
         }
         return R.ok().message("删除小节成功");
@@ -58,10 +58,16 @@ public class EduVideoController {
     @PutMapping("updateVideo")
     public R updateVideo(@RequestBody EduVideoPO eduVideoPO) {
         boolean flag = eduVideoService.updateById(eduVideoPO);
-        if (flag) {
+        if (!flag) {
             throw new GuliException(ResultCodeEnum.ERROR.getResultCode(), "修改小节失败");
         }
         return R.ok().message("修改小节成功");
+    }
+
+    @GetMapping("getVideo/{id}")
+    public R getVideo(@PathVariable("id") String id) {
+        EduVideoPO eduVideoPO = eduVideoService.getById(id);
+        return R.ok().data("video",eduVideoPO);
     }
 
 }
