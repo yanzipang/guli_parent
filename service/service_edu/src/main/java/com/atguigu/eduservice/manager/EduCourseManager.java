@@ -17,4 +17,10 @@ public interface EduCourseManager {
      */
     R addCourseInfoAndEduCourseDescription(CourseInfoVO courseInfoVO);
 
+    /**
+     * 删除课程
+     * @param courseId
+     * @return
+     */
+    R removeCourse(String courseId);
 }

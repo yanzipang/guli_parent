@@ -139,4 +139,10 @@ public class EduCourseServiceImpl extends ServiceImpl<EduCourseMapper, EduCourse
         }
         return R.ok().message("发布成功");
     }
+
+    @Override
+    public R removeByCourseId(String courseId) {
+        R r = eduCourseManager.removeCourse(courseId);
+        return r;
+    }
 }

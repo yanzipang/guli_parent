@@ -2,12 +2,15 @@ package com.atguigu.eduservice.controller;
 
 
 import com.atguigu.commonutils.response.R;
+import com.atguigu.eduservice.entity.po.EduCoursePO;
 import com.atguigu.eduservice.entity.vo.CourseInfoVO;
 import com.atguigu.eduservice.service.EduCourseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -79,6 +82,28 @@ public class EduCourseController {
     @GetMapping("publishCourse/{id}")
     public R publishCourse(@PathVariable("id") String id) {
         R r = eduCourseService.publishCourseInfo(id);
+        return r;
+    }
+
+    /**
+     * 查询所有课程
+     * @return
+     */
+    @GetMapping("getAllCourse")
+    public R getAllCourses() {
+        List<EduCoursePO> list = eduCourseService.list(null);
+        System.out.println(list);
+        return R.ok().data("list",list);
+    }
+
+    /**
+     * 根据课程id删除课程相关信息
+     * @param courseId
+     * @return
+     */
+    @DeleteMapping("deleteCourse/{courseId}")
+    public R deleteCourse(String courseId) {
+        R r = eduCourseService.removeByCourseId(courseId);
         return r;
     }
 }

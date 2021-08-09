@@ -1,19 +1,29 @@
 package com.atguigu.eduservice.manager.impl;
 
+import cn.hutool.core.util.ObjectUtil;
 import com.atguigu.commonutils.manager.BaseManager;
 import com.atguigu.commonutils.response.R;
+import com.atguigu.eduservice.entity.po.EduChapterPO;
 import com.atguigu.eduservice.entity.po.EduCourseDescriptionPO;
 import com.atguigu.eduservice.entity.po.EduCoursePO;
+import com.atguigu.eduservice.entity.po.EduVideoPO;
 import com.atguigu.eduservice.entity.vo.CourseInfoVO;
 import com.atguigu.eduservice.manager.EduCourseManager;
+import com.atguigu.eduservice.mapper.EduChapterMapper;
+import com.atguigu.eduservice.mapper.EduCourseDescriptionMapper;
+import com.atguigu.eduservice.mapper.EduCourseMapper;
+import com.atguigu.eduservice.mapper.EduVideoMapper;
+import com.atguigu.eduservice.service.EduChapterService;
 import com.atguigu.eduservice.service.EduCourseDescriptionService;
 import com.atguigu.eduservice.service.EduCourseService;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.support.TransactionTemplate;
 
+import javax.annotation.Resource;
 import java.util.List;
 
 /**
@@ -32,6 +42,18 @@ public class EduCourseManagerImpl extends BaseManager implements EduCourseManage
 
     @Autowired
     private EduCourseDescriptionService eduCourseDescriptionService;
+
+    @Resource
+    private EduChapterMapper eduChapterMapper;
+
+    @Resource
+    private EduVideoMapper eduVideoMapper;
+
+    @Resource
+    private EduCourseDescriptionMapper eduCourseDescriptionMapper;
+
+    @Resource
+    private EduCourseMapper eduCourseMapper;
 
     /**
      * 添加课程信息及课程描述信息
@@ -64,6 +86,69 @@ public class EduCourseManagerImpl extends BaseManager implements EduCourseManage
                 transactionStatus.setRollbackOnly();
                 log.error(TAG, e);
                 return R.error().message("添加失败");
+            }
+        });
+    }
+
+    @Override
+    public R removeCourse(String courseId) {
+        TransactionTemplate transactionTemplate = getDataSourceTransactionManager();
+        return transactionTemplate.execute(transactionStatus -> {
+            try {
+                // 小节
+                LambdaQueryWrapper<EduVideoPO> queryWrapper = new LambdaQueryWrapper<>();
+                queryWrapper.eq(EduVideoPO::getCourseId,courseId);
+                List<EduVideoPO> eduVideoPOS = eduVideoMapper.selectList(queryWrapper);
+                if (ObjectUtil.isNotEmpty(eduVideoPOS)) {
+                    int i = eduVideoMapper.delete(queryWrapper);
+                    if (i < 1) {
+                        transactionStatus.setRollbackOnly();
+                        return R.error().message("删除失败");
+                    }
+                }
+
+                // 章节
+                LambdaQueryWrapper<EduChapterPO> queryWrapper1 = new LambdaQueryWrapper<>();
+                queryWrapper1.eq(EduChapterPO::getCourseId,courseId);
+                List<EduChapterPO> eduChapterPOS = eduChapterMapper.selectList(queryWrapper1);
+                if (ObjectUtil.isNotEmpty(eduChapterPOS)) {
+                    int i = eduChapterMapper.delete(queryWrapper1);
+                    if (i < 1) {
+                        transactionStatus.setRollbackOnly();
+                        return R.error().message("删除失败");
+                    }
+                }
+
+                // 课程描述
+                LambdaQueryWrapper<EduCourseDescriptionPO> queryWrapper2 = new LambdaQueryWrapper<>();
+                queryWrapper2.eq(EduCourseDescriptionPO::getId,courseId);
+                EduCourseDescriptionPO eduCourseDescriptionPO = eduCourseDescriptionMapper.selectOne(queryWrapper2);
+                if (ObjectUtil.isNotNull(eduCourseDescriptionPO)) {
+                    int i = eduCourseDescriptionMapper.delete(queryWrapper2);
+                    if (i < 1) {
+                        transactionStatus.setRollbackOnly();
+                        return R.error().message("删除失败");
+                    }
+                }
+
+                // 课程
+                LambdaQueryWrapper<EduCoursePO> queryWrapper3 = new LambdaQueryWrapper<>();
+                queryWrapper3.eq(EduCoursePO::getId,courseId);
+                EduCoursePO eduCoursePO = eduCourseMapper.selectOne(queryWrapper3);
+                if (ObjectUtil.isNotNull(eduCoursePO)) {
+                    int i = eduCourseMapper.delete(queryWrapper3);
+                    if (i < 1) {
+                        transactionStatus.setRollbackOnly();
+                        return R.error().message("删除失败");
+                    }
+                }
+
+                return R.ok().message("删除成功");
+
+            } catch (Exception e) {
+                transactionStatus.setRollbackOnly();
+                log.error(TAG, e);
+                return R.error().message("删除失败");
             }
         });
     }
