@@ -1,14 +1,18 @@
 package com.atguigu.eduservice.controller;
 
 
+import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
+import cn.hutool.json.JSON;
+import cn.hutool.json.JSONObject;
 import com.atguigu.eduservice.constant.MessageConstant;
 import com.atguigu.eduservice.entity.po.EduTeacherPO;
 import com.atguigu.eduservice.entity.vo.TeacherAdd;
 import com.atguigu.eduservice.entity.vo.TeacherQuery;
 import com.atguigu.eduservice.service.EduTeacherService;
 import com.atguigu.commonutils.response.R;
+import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -16,6 +20,7 @@ import io.swagger.annotations.*;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import springfox.documentation.spring.web.json.Json;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -141,7 +146,7 @@ public class EduTeacherController {
 
         QueryWrapper<EduTeacherPO> queryWrapper = new QueryWrapper<>();
         queryWrapper.lambda()
-                //.eq(EduTeacherPO::getName,eduTeacher.getName())
+                .eq(EduTeacherPO::getName,eduTeacher.getName())
                 .eq(EduTeacherPO::getIntro,eduTeacher.getIntro())
                 .eq(EduTeacherPO::getCareer,eduTeacher.getCareer())
                 .eq(EduTeacherPO::getLevel,eduTeacher.getLevel())
@@ -150,7 +155,7 @@ public class EduTeacherController {
 
         EduTeacherPO teacher1 = eduTeacherService.getOne(queryWrapper);
 
-        if (ObjectUtil.isNotEmpty(teacher1)) {
+        if (ObjectUtil.isNotNull(teacher1)) {
             return R.error().message(MessageConstant.USER_HAVE);
         }
 
@@ -165,6 +170,7 @@ public class EduTeacherController {
             return R.error();
         }
     }
+
 
     // 根据ID查询讲师,做数据回显
     @ApiOperation(value = "根据ID查询讲师")
