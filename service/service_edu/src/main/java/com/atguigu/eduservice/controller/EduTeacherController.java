@@ -170,8 +170,7 @@ public class EduTeacherController {
             return R.error();
         }
     }
-
-
+    
     // 根据ID查询讲师,做数据回显
     @ApiOperation(value = "根据ID查询讲师")
     @GetMapping("getTeacher/{id}")

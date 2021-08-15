@@ -1,8 +1,11 @@
 package com.atguigu.eduservice.manager.impl;
 
+import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.ObjectUtil;
+import cn.hutool.core.util.StrUtil;
 import com.atguigu.commonutils.manager.BaseManager;
 import com.atguigu.commonutils.response.R;
+import com.atguigu.eduservice.client.VodClient;
 import com.atguigu.eduservice.entity.po.EduChapterPO;
 import com.atguigu.eduservice.entity.po.EduCourseDescriptionPO;
 import com.atguigu.eduservice.entity.po.EduCoursePO;
@@ -25,6 +28,9 @@ import org.springframework.transaction.support.TransactionTemplate;
 
 import javax.annotation.Resource;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executor;
+import java.util.stream.Collectors;
 
 /**
  * @Author hgk
@@ -54,6 +60,12 @@ public class EduCourseManagerImpl extends BaseManager implements EduCourseManage
 
     @Resource
     private EduCourseMapper eduCourseMapper;
+
+    @Resource( name = "myExecutor")
+    private Executor myExecutor;
+
+    @Autowired
+    private VodClient vodClient;
 
     /**
      * 添加课程信息及课程描述信息
@@ -142,6 +154,17 @@ public class EduCourseManagerImpl extends BaseManager implements EduCourseManage
                         return R.error().message("删除失败");
                     }
                 }
+
+                // 异步删除小节视频
+                CompletableFuture.runAsync(() -> {
+                    // 获取视频id的集合
+                    List<String> videoIdList = eduVideoPOS.stream().filter(k -> StrUtil.isNotBlank(k.getVideoSourceId())).map(EduVideoPO::getVideoSourceId).collect(Collectors.toList());
+                    // 视频id列表不为空
+                    if (CollUtil.isNotEmpty(videoIdList)) {
+                        // 批量删除视频
+                        vodClient.removeBatchVideo(videoIdList);
+                    }
+                },myExecutor);
 
                 return R.ok().message("删除成功");
 

@@ -3,9 +3,11 @@ package com.atguigu.eduservice.controller;
 
 import com.atguigu.commonutils.enums.ResultCodeEnum;
 import com.atguigu.commonutils.response.R;
+import com.atguigu.eduservice.client.VodClient;
 import com.atguigu.eduservice.entity.po.EduVideoPO;
 import com.atguigu.eduservice.service.EduVideoService;
 import com.atguigu.servicebase.exceptionhandler.GuliException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -45,14 +47,10 @@ public class EduVideoController {
      * @param id
      * @return
      */
-    // TODO 后续要完善，删除小节后，连同OSS上的小节视频一起删除
     @DeleteMapping("deleteVideo/{id}")
     public R deleteVideo(@PathVariable("id") String id) {
-        boolean flag = eduVideoService.removeById(id);
-        if (!flag) {
-            throw new GuliException(ResultCodeEnum.ERROR.getResultCode(), "删除小节失败");
-        }
-        return R.ok().message("删除小节成功");
+        R r = eduVideoService.removeVideoById(id);
+        return r;
     }
 
     @PutMapping("updateVideo")

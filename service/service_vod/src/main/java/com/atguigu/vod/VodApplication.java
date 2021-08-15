@@ -1,22 +1,21 @@
-package com.atguigu.oss;
+package com.atguigu.vod;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
-import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.context.annotation.ComponentScan;
 
 /**
- * @Author HanGuangKai
- * @Date 2021/7/28 22:53
+ * @Author hgk
+ * @Date 2021/8/13 20:29
  * @description
  */
-@SpringBootApplication(exclude = DataSourceAutoConfiguration.class) // 让其不去加载数据源的配置，以防启动失败
-@ComponentScan(basePackages = {"com.atguigu"}) // 目的是为了扫描swagger配置类
+@SpringBootApplication(exclude = DataSourceAutoConfiguration.class)
+@ComponentScan(basePackages={"com.atguigu"})
 @EnableDiscoveryClient // 添加Nacos客户端注解
-public class OssApplication {
+public class VodApplication {
     public static void main(String[] args) {
-        SpringApplication.run(OssApplication.class, args);
+        SpringApplication.run(VodApplication.class, args);
     }
 }

@@ -1,5 +1,6 @@
 package com.atguigu.eduservice.service;
 
+import com.atguigu.commonutils.response.R;
 import com.atguigu.eduservice.entity.po.EduVideoPO;
 import com.baomidou.mybatisplus.extension.service.IService;
 
@@ -13,4 +14,5 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface EduVideoService extends IService<EduVideoPO> {
 
+    R removeVideoById(String id);
 }
