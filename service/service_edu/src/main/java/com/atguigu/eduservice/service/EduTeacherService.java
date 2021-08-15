@@ -1,9 +1,12 @@
 package com.atguigu.eduservice.service;
 
+import com.atguigu.commonutils.response.R;
 import com.atguigu.eduservice.entity.po.EduTeacherPO;
 import com.atguigu.eduservice.entity.vo.TeacherQuery;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
+
+import java.util.List;
 
 /**
  * <p>
@@ -16,4 +19,6 @@ import com.baomidou.mybatisplus.extension.service.IService;
 public interface EduTeacherService extends IService<EduTeacherPO> {
 
     void pageQuery(Page<EduTeacherPO> pageParam, TeacherQuery teacherQuery);
+
+    List<EduTeacherPO>  selectTeacharIndexFour();
 }

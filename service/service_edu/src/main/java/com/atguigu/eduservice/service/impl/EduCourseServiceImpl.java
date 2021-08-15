@@ -16,6 +16,8 @@ import com.atguigu.eduservice.mapper.EduSubjectMapper;
 import com.atguigu.eduservice.mapper.EduTeacherMapper;
 import com.atguigu.eduservice.service.EduCourseService;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -144,5 +146,19 @@ public class EduCourseServiceImpl extends ServiceImpl<EduCourseMapper, EduCourse
     public R removeByCourseId(String courseId) {
         R r = eduCourseManager.removeCourse(courseId);
         return r;
+    }
+
+    /**
+     * 查八个课程
+     * @return
+     */
+    @Override
+    public List<EduCoursePO> selectCourseIndexEnght() {
+        LambdaQueryWrapper<EduCoursePO> queryWrapper = new LambdaQueryWrapper<>();
+        Page<EduCoursePO> page = new Page<EduCoursePO>(1, 8);
+        queryWrapper.orderByDesc(EduCoursePO::getViewCount);
+        IPage<EduCoursePO> eduEduCoursePOIPage = baseMapper.selectPage(page, queryWrapper);
+        List<EduCoursePO> records = eduEduCoursePOIPage.getRecords();
+        return records;
     }
 }

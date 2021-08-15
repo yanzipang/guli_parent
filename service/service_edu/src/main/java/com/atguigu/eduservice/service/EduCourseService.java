@@ -5,6 +5,8 @@ import com.atguigu.eduservice.entity.po.EduCoursePO;
 import com.atguigu.eduservice.entity.vo.CourseInfoVO;
 import com.baomidou.mybatisplus.extension.service.IService;
 
+import java.util.List;
+
 /**
  * <p>
  * 课程 服务类
@@ -26,4 +28,7 @@ public interface EduCourseService extends IService<EduCoursePO> {
     R publishCourseInfo(String id);
 
     R removeByCourseId(String courseId);
+
+    List<EduCoursePO> selectCourseIndexEnght();
+
 }

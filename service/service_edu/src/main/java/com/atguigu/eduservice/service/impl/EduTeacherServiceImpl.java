@@ -1,14 +1,19 @@
 package com.atguigu.eduservice.service.impl;
 
+import com.atguigu.commonutils.response.R;
 import com.atguigu.eduservice.entity.po.EduTeacherPO;
 import com.atguigu.eduservice.entity.vo.TeacherQuery;
 import com.atguigu.eduservice.mapper.EduTeacherMapper;
 import com.atguigu.eduservice.service.EduTeacherService;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
+
+import java.util.List;
 
 /**
  * <p>
@@ -20,6 +25,9 @@ import org.springframework.util.StringUtils;
  */
 @Service
 public class EduTeacherServiceImpl extends ServiceImpl<EduTeacherMapper, EduTeacherPO> implements EduTeacherService {
+
+
+
 
     @Override
     public void pageQuery(Page<EduTeacherPO> pageParam, TeacherQuery teacherQuery) {
@@ -53,5 +61,19 @@ public class EduTeacherServiceImpl extends ServiceImpl<EduTeacherMapper, EduTeac
         }
         queryWrapper.orderByDesc("gmt_create");
         baseMapper.selectPage(pageParam, queryWrapper);
+    }
+
+    /**
+     * 查四个老师
+     * @return
+     */
+    @Override
+    public List<EduTeacherPO>  selectTeacharIndexFour() {
+        LambdaQueryWrapper<EduTeacherPO> queryWrapper = new LambdaQueryWrapper<>();
+        Page<EduTeacherPO> page = new Page<EduTeacherPO>(1, 4);
+        queryWrapper.orderByDesc(EduTeacherPO::getGmtCreate);
+        IPage<EduTeacherPO> eduTeacherPOIPage = baseMapper.selectPage(page, queryWrapper);
+        List<EduTeacherPO> records = eduTeacherPOIPage.getRecords();
+        return records;
     }
 }
