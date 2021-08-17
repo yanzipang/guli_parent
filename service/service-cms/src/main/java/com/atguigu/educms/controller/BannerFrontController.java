@@ -35,7 +35,7 @@ public class BannerFrontController {
     @ApiOperation(value = "获取首页banner")
     @GetMapping("getAllBanner")
     public R getAllBanner() {
-        List<CrmBanner> list = bannerService.selectIndexList();
+        List<CrmBanner> list = bannerService.selectIndexListNew();
         return R.ok().data("bannerList", list);
     }
 }

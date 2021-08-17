@@ -10,9 +10,13 @@ import com.aliyuncs.exceptions.ClientException;
 import com.aliyuncs.exceptions.ServerException;
 import com.aliyuncs.http.MethodType;
 import com.aliyuncs.profile.DefaultProfile;
+import com.atguigu.commonutils.enums.ResultCodeEnum;
 import com.atguigu.commonutils.response.R;
 import com.atguigu.commonutils.util.RandomUtil;
+import com.atguigu.commonutils.util.RedisKeyConstantUtil;
 import com.atguigu.msmservice.service.MsmService;
+import com.atguigu.msmservice.util.AuthCodeUtil;
+import com.atguigu.msmservice.util.ShortMessageProperties;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
@@ -33,26 +37,44 @@ public class MsmServiceImpl implements MsmService {
     @Autowired
     private RedisTemplate<String, String> redisTemplate;
 
+    @Autowired
+    private ShortMessageProperties shortMessageProperties;
+
+    /**
+     * 发送短信验证码
+     * 验证码写死---0610
+     * @param phone 手机号
+     * @return
+     */
     @Override
     public R sendPhone(String phone) {
         if (StrUtil.isBlank(phone)) {
             return R.error().message("手机号不能为空");
         }
+        // 限制重复发送
+        String codes = redisTemplate.opsForValue().get(RedisKeyConstantUtil.getVerificationCodeKey(phone));
+        if (StrUtil.isNotBlank(codes)) {
+            return R.error().message("请勿频繁发送短信验证码");
+        }
 
         // 生成四位验证码
-        String code = RandomUtil.getFourBitRandom();
-        Map<String,Object> param = new HashMap<>();
-        param.put("code", code);
+        // String code = RandomUtil.getFourBitRandom();
+        // 验证码写死
+        String code = "0610";
 
-        // 调用方法，发送短信验证码
-        boolean isSend = this.send(phone, param);
-        if(isSend) {
-            // 发送成功 TODO 完善key规则
-            redisTemplate.opsForValue().set(phone, code,5, TimeUnit.MINUTES);
-            return R.ok().message("短信发送成功");
-        } else {
-            return R.error().message("发送短信失败");
+        // 调用工具类中的发送验证码的方法，可以从配置文件中读取配置的接口信息---模拟
+        R r = AuthCodeUtil.sendAuthCode(code);
+        // 发送成功
+        if (r.getCode().equals(ResultCodeEnum.SUCCESS.getResultCode())) {
+            try {
+                // 将验证码存入redis,保存五分钟
+                redisTemplate.opsForValue().setIfAbsent(RedisKeyConstantUtil.getVerificationCodeKey(phone), code, 5, TimeUnit.MINUTES);
+                return R.ok().message("验证码发送成功");
+            } catch (Exception e) {
+                return R.error().message("验证码发送失败，请重试");
+            }
         }
+        return R.error().message(r.getMessage());
     }
 
     /**

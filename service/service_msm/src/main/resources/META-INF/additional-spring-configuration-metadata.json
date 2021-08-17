@@ -1,0 +1,8 @@
+{
+  "properties": [
+    {
+      "name": "short.message.host",
+      "type": "java.lang.String",
+      "description": "Description for short.message.host."
+  }
+] }
