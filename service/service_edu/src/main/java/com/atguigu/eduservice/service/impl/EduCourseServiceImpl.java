@@ -21,6 +21,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -152,6 +153,7 @@ public class EduCourseServiceImpl extends ServiceImpl<EduCourseMapper, EduCourse
      * 查八个课程
      * @return
      */
+    @Cacheable(key = "'courseList'",value = "recordsList")
     @Override
     public List<EduCoursePO> selectCourseIndexEnght() {
         LambdaQueryWrapper<EduCoursePO> queryWrapper = new LambdaQueryWrapper<>();

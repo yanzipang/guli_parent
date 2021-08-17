@@ -10,6 +10,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -67,6 +68,7 @@ public class EduTeacherServiceImpl extends ServiceImpl<EduTeacherMapper, EduTeac
      * 查四个老师
      * @return
      */
+    @Cacheable(key = "'teacherList'",value = "records")
     @Override
     public List<EduTeacherPO>  selectTeacharIndexFour() {
         LambdaQueryWrapper<EduTeacherPO> queryWrapper = new LambdaQueryWrapper<>();
